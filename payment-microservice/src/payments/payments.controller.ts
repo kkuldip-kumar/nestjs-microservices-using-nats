@@ -1,35 +1,40 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Inject } from '@nestjs/common';
+import { ClientProxy, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 
 @Controller()
 export class PaymentsController {
-  constructor(private readonly paymentsService: PaymentsService) {}
-
-  @MessagePattern('createPayment')
-  create(@Payload() createPaymentDto: CreatePaymentDto) {
-    return this.paymentsService.create(createPaymentDto);
+  constructor(
+    @Inject('NATS_SERVICE') private natsClient: ClientProxy,
+    private paymentsService: PaymentsService,
+  ) { }
+  @EventPattern('createPayment')
+  async createPayment(@Payload() createPaymentDto: CreatePaymentDto) {
+    console.log(createPaymentDto);
+    // const newPayment =
+    //   await this.paymentsService.createPayment(createPaymentDto);
+    if (createPaymentDto) this.natsClient.emit('paymentCreated', createPaymentDto);
   }
 
-  @MessagePattern('findAllPayments')
-  findAll() {
-    return this.paymentsService.findAll();
-  }
+  // @MessagePattern('findAllPayments')
+  // findAll() {
+  //   return this.paymentsService.findAll();
+  // }
 
-  @MessagePattern('findOnePayment')
-  findOne(@Payload() id: number) {
-    return this.paymentsService.findOne(id);
-  }
+  // @MessagePattern('findOnePayment')
+  // findOne(@Payload() id: number) {
+  //   return this.paymentsService.findOne(id);
+  // }
 
-  @MessagePattern('updatePayment')
-  update(@Payload() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentsService.update(updatePaymentDto.id, updatePaymentDto);
-  }
+  // @MessagePattern('updatePayment')
+  // update(@Payload() updatePaymentDto: UpdatePaymentDto) {
+  //   return this.paymentsService.update(updatePaymentDto.id, updatePaymentDto);
+  // }
 
-  @MessagePattern('removePayment')
-  remove(@Payload() id: number) {
-    return this.paymentsService.remove(id);
-  }
+  // @MessagePattern('removePayment')
+  // remove(@Payload() id: number) {
+  //   return this.paymentsService.remove(id);
+  // }
 }
