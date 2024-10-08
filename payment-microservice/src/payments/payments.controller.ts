@@ -8,14 +8,14 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 export class PaymentsController {
   constructor(
     @Inject('NATS_SERVICE') private natsClient: ClientProxy,
-    private paymentsService: PaymentsService,
+    private readonly paymentsService: PaymentsService
   ) { }
   @EventPattern('createPayment')
   async createPayment(@Payload() createPaymentDto: CreatePaymentDto) {
     console.log(createPaymentDto);
-    // const newPayment =
-    //   await this.paymentsService.createPayment(createPaymentDto);
-    if (createPaymentDto) this.natsClient.emit('paymentCreated', createPaymentDto);
+    const newPayment =
+      await this.paymentsService.createPayment(createPaymentDto);
+    if (newPayment) this.natsClient.emit('paymentCreated', newPayment);
   }
 
   // @MessagePattern('findAllPayments')
