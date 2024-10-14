@@ -16,7 +16,7 @@ services:
       - ./user-microservice/src:/usr/src/app/src
     command: pnpm run start:dev
     depends_on:
-      - mysql_db # Ensures MySQL starts before this service
+      - mysql_db
 
   payment_microservice:
     build: ./payment-microservice
@@ -24,7 +24,14 @@ services:
       - ./payment-microservice/src:/usr/src/app/src
     command: pnpm run start:dev
     depends_on:
-      - mysql_db # Ensures MySQL starts before this service
+      - mysql_db
+  auth_microservice:
+    build: ./auth-microservice
+    volumes:
+      - ./auth-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
 
   nats:
     image: nats
