@@ -32,7 +32,13 @@ services:
     command: pnpm run start:dev
     depends_on:
       - mysql_db
-
+  product_microservice:
+    build: ./product-microservice
+    volumes:
+      - ./product-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
   nats:
     image: nats
     ports:
