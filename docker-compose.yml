@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   gateway:
-    build: ./gateway
+    build:
+      context: ./gateway
+      dockerfile: ../Dockerfile
     ports:
       - "3000:3000"
     volumes:
@@ -11,31 +13,48 @@ services:
       - PORT=3000
 
   user_microservice:
-    build: ./user-microservice
+    build:
+      context: ./user-microservice
+      dockerfile: ../Dockerfile
     volumes:
       - ./user-microservice/src:/usr/src/app/src
     command: pnpm run start:dev
     depends_on:
       - mysql_db
 
-  payment_microservice:
-    build: ./payment-microservice
-    volumes:
-      - ./payment-microservice/src:/usr/src/app/src
-    command: pnpm run start:dev
-    depends_on:
-      - mysql_db
+  # payment_microservice:
+  #   build: ./payment-microservice
+  #   volumes:
+  #     - ./payment-microservice/src:/usr/src/app/src
+  #   command: pnpm run start:dev
+  #   depends_on:
+  #     - mysql_db
   auth_microservice:
-    build: ./auth-microservice
+    build:
+      context: ./auth-microservice
+      dockerfile: ../Dockerfile
     volumes:
       - ./auth-microservice/src:/usr/src/app/src
     command: pnpm run start:dev
     depends_on:
       - mysql_db
+    environment:
+      - JWT_SECRET=cff69aa4-f4ad-47a7-b0c1-73a6ac1ef24c
   product_microservice:
-    build: ./product-microservice
+    build:
+      context: ./product-microservice
+      dockerfile: ../Dockerfile
     volumes:
       - ./product-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
+  cart_microservice:
+    build:
+      context: ./cart-microservice
+      dockerfile: ../Dockerfile
+    volumes:
+      - ./cart-microservice/src:/usr/src/app/src
     command: pnpm run start:dev
     depends_on:
       - mysql_db

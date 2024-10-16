@@ -16,7 +16,7 @@ export class CategoryController {
 
   @Get()
   findAll() {
-    return this.natsClient.send({ cmd: 'all-category' }, {})
+    return this.natsClient.send({ cmd: 'all-category' },{})
   }
 
   @Get(':id')

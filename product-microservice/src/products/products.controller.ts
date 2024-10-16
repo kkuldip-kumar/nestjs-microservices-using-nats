@@ -8,17 +8,17 @@ import { UpdateProductDto } from './dto/update-product.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
-  @MessagePattern('createProduct')
+  @MessagePattern({cmd:'add-product'})
   createProduct(@Payload() createProductDto: CreateProductDto) {
     return this.productsService.createProduct(createProductDto);
   }
 
-  @MessagePattern('findAllProducts')
+  @MessagePattern({cmd:'all-product'})
   findAll() {
     return this.productsService.findAll();
   }
 
-  @MessagePattern('findOneProduct')
+  @MessagePattern({cmd:"get-one-product"})
   findOne(@Payload() id: string) {
     return this.productsService.findProductById(id);
   }
@@ -32,12 +32,13 @@ export class ProductsController {
   //   return this.productsService.searchProducts(name, categoryId, minPrice, maxPrice);
   // }
 
-  @MessagePattern('updateProduct')
-  update(@Payload() id: string, updateProductDto: UpdateProductDto) {
+  @MessagePattern({ cmd: 'update-product' })
+  update(@Payload() data: { id: string; updateProductDto: UpdateProductDto }) {
+    const { id, updateProductDto } = data;
     return this.productsService.updateProduct(id, updateProductDto);
   }
 
-  @MessagePattern('removeProduct')
+  @MessagePattern({cmd:'remove-product'})
   remove(@Payload() id: string) {
     return this.productsService.removeProductById(id);
   }

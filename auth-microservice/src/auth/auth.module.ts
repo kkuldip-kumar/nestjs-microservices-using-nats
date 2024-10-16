@@ -7,13 +7,23 @@ import { ResetToken } from './entities/reset-token.entity';
 import { UserLogin } from './entities/user-logIn.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { NatsClientModule } from 'src/nats-client/nats-client.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserLogin, RefreshToken, ResetToken]),
-    JwtModule.register({
-      secret: 'KEY_JWT_SECRET',
-      signOptions: { expiresIn: '1d' },
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService]
     }),
     NatsClientModule
   ],

@@ -5,6 +5,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { CategoryModule } from './category/category.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { CategoryModule } from './category/category.module';
     UsersModule,
     PaymentsModule,
     ProductsModule,
-    CategoryModule
+    CategoryModule,
+    CartModule
   ],
   controllers: [
 

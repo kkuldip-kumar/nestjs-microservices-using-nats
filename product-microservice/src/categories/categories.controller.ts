@@ -8,27 +8,28 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
-  @MessagePattern('createCategory')
+  @MessagePattern({cmd:"add-category"})
   create(@Payload() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
-  @MessagePattern('findAllCategories')
+  @MessagePattern({cmd:'all-category'})
   findAll() {
     return this.categoriesService.findAll();
   }
 
-  @MessagePattern('findOneCategory')
+  @MessagePattern({cmd:'get-category'})
   findOne(@Payload() id: string) {
     return this.categoriesService.findOne(id);
   }
 
-  @MessagePattern('updateCategory')
-  update(@Payload() id: string, updateCategoryDto: UpdateCategoryDto) {
+  @MessagePattern({cmd:'update-category'})
+  update(@Payload() data:{id: string, updateCategoryDto: UpdateCategoryDto}) {
+    const { id, updateCategoryDto } = data;
     return this.categoriesService.update(id, updateCategoryDto);
   }
 
-  @MessagePattern('removeCategory')
+  @MessagePattern({cmd:'remove-category'})
   remove(@Payload() id: string) {
     return this.categoriesService.remove(id);
   }

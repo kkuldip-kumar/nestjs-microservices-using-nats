@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -7,10 +7,11 @@ import { UserLogin } from './auth/entities/user-logIn.entity';
 import { RefreshToken } from './auth/entities/refresh-token.entity';
 import { ResetToken } from './auth/entities/reset-token.entity';
 import { User } from './auth/entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'mysql_db',
@@ -21,13 +22,16 @@ import { JwtModule } from '@nestjs/jwt';
       entities: [UserLogin, User, RefreshToken, ResetToken],
       synchronize: true,
     }),
-    JwtModule.register({
-      secret: 'KEY_JWT_SECRET',
-      signOptions: { expiresIn: '1d' },
-    }),
     AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements OnModuleInit {
+  constructor(private configService: ConfigService) { }
+
+  onModuleInit() {
+    console.log(this.configService.get<string>('JWT_SECRET'));
+
+  }
+}

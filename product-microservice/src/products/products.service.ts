@@ -60,7 +60,11 @@ export class ProductsService {
   }
   // Find product by ID
   async removeProductById(id: string): Promise<Product> {
-    return this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    return this.productRepository.remove(product);
   }
 
   // Create a new product

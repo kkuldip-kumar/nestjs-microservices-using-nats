@@ -19,16 +19,16 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.natsClient.send({ cmd: 'all-product' }, id)
+    return this.natsClient.send({ cmd: 'get-one-product' }, id)
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.natsClient.send({ cmd: 'all-product' }, { id, updateProductDto })
+    return this.natsClient.send({ cmd: 'update-product' }, { id, updateProductDto })
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.natsClient.send({ cmd: 'all-product' }, id);
+    return this.natsClient.send({ cmd: 'remove-product' }, id);
   }
 }

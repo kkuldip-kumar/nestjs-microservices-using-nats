@@ -152,9 +152,12 @@ export class AuthService {
             // console.log(user)
             //Generate JWT tokens
             const { password: savedPassword, ...rest } = user
-            const tokens = this.generateUserTokens(user);
+            // console.log('user', user);
+            const payload = { sub: user.id };
+            // const tokens = this.jwtService.sign(payload);
+            const tokens = this.generateUserTokens(rest);
+            console.log(tokens);
             return {
-                ...tokens,
                 userId: user.id,
             };
         } catch (error) {
@@ -301,7 +304,7 @@ export class AuthService {
 
     private generateUserTokens(userId: any) {
         const payload = { sub: userId };
-        const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
+        const accessToken = this.jwtService.sign(payload);
         const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
         return {
             accessToken,
