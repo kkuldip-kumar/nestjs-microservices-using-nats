@@ -49,7 +49,9 @@ export class CartService {
 
       throw new InternalServerErrorException('Failed to communicate with microservice');
     }
-
+    if (!cart.items) {
+      cart.items = [];
+    }
     let cartItem = cart.items.find(item => item.product === product.id);
     if (cartItem) {
       cartItem.quantity += addToCartDto.quantity;
@@ -60,7 +62,7 @@ export class CartService {
       });
       cart.items.push(cartItem);
     }
-
+    console.log('product', cart);
     await this.cartRepository.save(cart);
     return 'added successfully';
   }

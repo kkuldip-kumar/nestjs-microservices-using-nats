@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
 
         const token = tokenArray[1];
         try {
+            console.log('kk', token)
             // const decodedToken = await this.authService.validateToken(token);
             const user = await lastValueFrom<User>(
                 this.natsClient.send({ cmd: 'validate-authToken' }, token)

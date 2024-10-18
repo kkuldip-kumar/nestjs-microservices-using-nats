@@ -25,6 +25,7 @@ export class AuthController {
     }
     @MessagePattern({ cmd: 'validate-authToken' })
     async authToken(@Payload() token: string) {
+        console.log('auther', token);
         return this.authService.validateToken(token);
     }
     @MessagePattern({ cmd: 'getUserLogin' })

@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt'
 import { SignupDto } from './dtos/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dtos/login.dto';
@@ -12,8 +12,10 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { createHash, randomBytes } from 'crypto';
 import { UserLogin } from './entities/user-logIn.entity';
 import { ClientProxy } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
+    private readonly jwtSecret: string;
     constructor(
         @InjectRepository(UserLogin)
         private userLoginRepo: Repository<UserLogin>,
@@ -23,8 +25,19 @@ export class AuthService {
         private refreshTokenRepo: Repository<RefreshToken>,
         private jwtService: JwtService,
         private dataSource: DataSource,
-        @Inject('NATS_SERVICE') private natsClient: ClientProxy
-    ) { }
+        @Inject('NATS_SERVICE') private natsClient: ClientProxy,
+        private configService: ConfigService
+    ) {
+        this.jwtSecret = this.configService.get<string>('JWT_SECRET');
+        console.log('AuthService constructor - JWT_SECRET:', this.jwtSecret);
+        console.log('JwtService options:', this.jwtService['options']);
+
+        // Attempt to set the secret if it's not already set
+        if (!this.jwtService['options'].secret) {
+            console.log('Setting JwtService secret in constructor');
+            this.jwtService['options'].secret = this.jwtSecret;
+        }
+    }
 
     generateResetToken(): string {
         const randomToken = randomBytes(32).toString('hex');
@@ -48,7 +61,7 @@ export class AuthService {
 
     async validateToken(token: string) {
         return this.jwtService.verify(token, {
-            secret: "KEY_JWT_SECRET"
+            secret: this.jwtSecret
         });
     }
 
@@ -138,6 +151,8 @@ export class AuthService {
     async login(credentials: LoginDto) {
         const { email, password } = credentials;
         //Find if user exists by email
+        const secret = this.configService.get<string>('JWT_SECRET');
+        console.log('AuthService login - JWT_SECRET:', secret);
         try {
             const user = await this.userLoginRepo.findOneBy({ email });
             if (!user) {
@@ -152,12 +167,9 @@ export class AuthService {
             // console.log(user)
             //Generate JWT tokens
             const { password: savedPassword, ...rest } = user
-            // console.log('user', user);
-            const payload = { sub: user.id };
-            // const tokens = this.jwtService.sign(payload);
-            const tokens = this.generateUserTokens(rest);
-            console.log(tokens);
+            const tokens = this.generateUserTokens(user);
             return {
+                ...tokens,
                 userId: user.id,
             };
         } catch (error) {
@@ -304,7 +316,7 @@ export class AuthService {
 
     private generateUserTokens(userId: any) {
         const payload = { sub: userId };
-        const accessToken = this.jwtService.sign(payload);
+        const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
         const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
         return {
             accessToken,

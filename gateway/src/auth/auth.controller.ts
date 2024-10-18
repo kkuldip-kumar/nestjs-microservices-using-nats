@@ -29,7 +29,7 @@ export class AuthController {
     }
 
     @Get('verify')
-    // @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     getCurrentUser(@Req() req: RequestModel) {
         const user = req.user;
@@ -43,7 +43,7 @@ export class AuthController {
     }
 
     @Post('change-password')
-    // @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)
     async changePassword(
         @Body() changePasswordDto: ChangePasswordDto,

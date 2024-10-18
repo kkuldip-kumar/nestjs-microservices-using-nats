@@ -22,13 +22,20 @@ services:
     depends_on:
       - mysql_db
 
-  # payment_microservice:
-  #   build: ./payment-microservice
-  #   volumes:
-  #     - ./payment-microservice/src:/usr/src/app/src
-  #   command: pnpm run start:dev
-  #   depends_on:
-  #     - mysql_db
+  payment_microservice:
+    build: ./payment-microservice
+    volumes:
+      - ./payment-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
+  order_microservice:
+    build: ./order-microservice
+    volumes:
+      - ./order-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
   auth_microservice:
     build:
       context: ./auth-microservice
