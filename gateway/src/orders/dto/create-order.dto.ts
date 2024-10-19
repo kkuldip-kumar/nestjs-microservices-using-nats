@@ -1,20 +1,16 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString, IsUUID } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString, IsUUID } from "class-validator";
 
 export class CreateOrderDto {
-    @IsUUID()
-    @IsNotEmpty()
-    userId: string;
-    @IsUUID()
+    @IsString()
     @IsNotEmpty()
     shippingAddress: string;
     @IsNumber()
-    @IsPositive()
     totalAmount: number;
-    @IsNumber()
-    @IsPositive()
-    quantity: number;
-    @IsUUID()
-    status: string;
-    @IsUUID()
+    @IsString()
     paymentMethod: string;
+    @IsArray()
+    items: {
+        productId: string;
+        quantity: number;
+    }[];
 }

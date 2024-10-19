@@ -1,20 +1,20 @@
 
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Cart } from './Cart';
-import { Product } from './Product';
+import { Product } from './product.entity';
+import { Order } from './order.entity';
 
-@Entity('orderItem')
+@Entity('order_item')
 export class OrderItem {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ManyToOne(() => Product, { eager: true })
+    @ManyToOne(() => Product, (product) => product.orders, { eager: true })
     product: Product;
 
     @Column('int')
     quantity: number;
 
-    @ManyToOne(() => Cart, (cart) => cart.items)
-    cart: Cart;
+    @ManyToOne(() => Order, (order) => order.items)
+    order: Order;
 }

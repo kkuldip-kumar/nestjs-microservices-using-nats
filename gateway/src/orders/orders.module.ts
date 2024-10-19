@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
 import { NatsClientModule } from '@/nats-client/nats-client.module';
+import { UserIdMiddleware } from '@/middleware/userId-middleware';
 
 @Module({
   imports: [NatsClientModule],
@@ -9,3 +10,10 @@ import { NatsClientModule } from '@/nats-client/nats-client.module';
   providers: [OrdersService],
 })
 export class OrdersModule { }
+// implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(UserIdMiddleware)
+//       .forRoutes(OrdersController);
+//   }
+// }

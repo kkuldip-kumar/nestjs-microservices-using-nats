@@ -1,10 +1,12 @@
 export class CreateOrderDto {
-    cartId: string;
-    shippingAddress: {
-        street: string;
-        city: string;
-        country: string;
-        postalCode: string;
-    };
+    userId: string;
+    shippingAddress: string;
+    totalAmount: number;
     paymentMethod: string;
+    items: [
+        {
+            productId: string,
+            quantity: number
+        }
+    ]
 }

@@ -10,7 +10,6 @@ export class CartController {
 
   @MessagePattern('add-to-cart')
   create(@Payload() data: { userId: string, createCartDto: AddToCartDto }) {
-    console.log('data', data);
     const { userId, createCartDto } = data
     return this.cartService.addToCart(userId, createCartDto);
   }
@@ -26,15 +25,16 @@ export class CartController {
   }
 
   @MessagePattern('update-cart')
-  update(@Payload() data: { id: string, createCartDto: UpdateCartItemDto }) {
-    const { id, createCartDto } = data
-    return this.cartService.updateCartItem(id, createCartDto);
+  update(@Payload() createCartDto: UpdateCartItemDto) {
+    // const { id, createCartDto } = data
+    console.log('createCartDto', createCartDto);
+    return this.cartService.updateCartItem(createCartDto);
   }
 
   @MessagePattern('remove-item-from-cart')
-  remove(@Payload() data: { userId: string, removeCartItemDto: RemoveCartItemDto }) {
-    const { userId, removeCartItemDto } = data
-    console.log('data', userId, removeCartItemDto)
-    return this.cartService.removeCartItem(userId, removeCartItemDto);
+  remove(@Payload() removeCartItemDto: RemoveCartItemDto) {
+    // const { userId, removeCartItemDto } = data;
+    console.log('data', removeCartItemDto)
+    return this.cartService.removeCartItem(removeCartItemDto);
   }
 }

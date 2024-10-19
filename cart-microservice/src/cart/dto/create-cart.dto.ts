@@ -6,10 +6,12 @@ export class AddToCartDto {
 }
 
 export class UpdateCartItemDto {
+    userId: string;
     cartItemId: string;
     quantity: number;
 }
 
 export class RemoveCartItemDto {
+    userId: string;
     cartItemId: string;
 }

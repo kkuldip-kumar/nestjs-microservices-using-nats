@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserLogin } from "./user-logIn.entity";
 
-@Entity('reset-token')
+@Entity('reset_token')
 export class ResetToken {
   @Column()
   @PrimaryGeneratedColumn("uuid")

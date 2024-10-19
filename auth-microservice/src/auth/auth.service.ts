@@ -60,9 +60,22 @@ export class AuthService {
     }
 
     async validateToken(token: string) {
-        return this.jwtService.verify(token, {
-            secret: this.jwtSecret
-        });
+        try {
+            const value = await this.jwtService.verifyAsync(token, {
+                secret: this.jwtSecret,
+            });
+
+            return value; // Token is valid
+        } catch (error) {
+            // Handle invalid or expired token
+            if (error.name === 'TokenExpiredError') {
+                throw new UnauthorizedException('Token has expired');
+            } else if (error.name === 'JsonWebTokenError') {
+                throw new UnauthorizedException('Invalid token');
+            } else {
+                throw new UnauthorizedException('Unable to authenticate token');
+            }
+        }
     }
 
     async validateUser(id): Promise<any> {
@@ -155,7 +168,11 @@ export class AuthService {
         console.log('AuthService login - JWT_SECRET:', secret);
         try {
             const user = await this.userLoginRepo.findOneBy({ email });
-            if (!user) {
+            const userLogin = await this.userLoginRepo.findOne({
+                where: { email },
+                relations: ['user'],
+            });
+            if (!userLogin) {
                 throw new UnauthorizedException('Wrong credentials');
             }
 
@@ -164,10 +181,10 @@ export class AuthService {
             if (!passwordMatch) {
                 throw new UnauthorizedException('Wrong credentials');
             }
-            // console.log(user)
+            console.log(user)
             //Generate JWT tokens
             const { password: savedPassword, ...rest } = user
-            const tokens = this.generateUserTokens(user);
+            const tokens = this.generateUserTokens(rest);
             return {
                 ...tokens,
                 userId: user.id,
