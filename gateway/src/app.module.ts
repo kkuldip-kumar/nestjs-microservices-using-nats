@@ -7,6 +7,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoryModule } from './category/category.module';
 import { CartModule } from './cart/cart.module';
 import { OrdersModule } from './orders/orders.module';
+import { ProductReviewModule } from './product-review/product-review.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { OrdersModule } from './orders/orders.module';
     ProductsModule,
     CategoryModule,
     CartModule,
-    OrdersModule
+    OrdersModule,
+    ProductReviewModule
   ],
   controllers: [
 
