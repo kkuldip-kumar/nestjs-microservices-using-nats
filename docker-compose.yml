@@ -56,6 +56,15 @@ services:
     command: pnpm run start:dev
     depends_on:
       - mysql_db
+  product_review_microservice:
+    build:
+      context: ./product-review-microservice
+      dockerfile: ../Dockerfile
+    volumes:
+      - ./product-review-microservice/src:/usr/src/app/src
+    command: pnpm run start:dev
+    depends_on:
+      - mysql_db
   cart_microservice:
     build:
       context: ./cart-microservice

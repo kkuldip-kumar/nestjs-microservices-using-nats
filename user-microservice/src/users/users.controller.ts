@@ -17,6 +17,7 @@ export class UsersController {
   @MessagePattern({ cmd: 'getUserById' })
   getUserById(@Payload() data) {
     const { userId } = data;
+    console.log('userdata contorller', data)
     return this.usersService.getUserById(userId);
   }
 

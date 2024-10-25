@@ -12,21 +12,21 @@ export class CartController {
   @Post()
   @UseGuards(AuthGuard)
   create(@Body() createCartDto: AddToCartDto, @Req() req: RequestModel) {
-    const userId = req.user['sub'].id;
+    const userId = req.user['sub'].userId;
     return this.natsClient.send('add-to-cart', { userId, createCartDto })
   }
 
   @Get()
   @UseGuards(AuthGuard)
   findOne(@Req() req: RequestModel) {
-    const userId = req.user['sub'].id;
+    const userId = req.user['sub'].userId;
     return this.natsClient.send('get-user-cart', userId)
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
   update(@Param('id') id: string, @Req() req: RequestModel, @Body() updateCartDto: UpdateCartDto) {
-    const userId = req.user['sub'].id;
+    const userId = req.user['sub'].userId;
     console.log('update', { userId, cartItemId: id, ...updateCartDto });
     return this.natsClient.send('update-cart', { userId, cartItemId: id, ...updateCartDto })
   }
@@ -34,7 +34,7 @@ export class CartController {
   @Delete()
   @UseGuards(AuthGuard)
   removeItem(@Req() req: RequestModel, @Query() query: RemoveCartItemDto) {
-    const userId = req.user['sub'].id;
+    const userId = req.user['sub'].userId;
     console.log('query', query);
     const { cartItemId: cartItemId } = query;
     console.log({ userId, cartItemId });

@@ -26,7 +26,7 @@ export class UserLogin {
     @Column()
     // @Exclude()
     password: string;
-    @OneToOne(() => User, { onDelete: 'CASCADE' })
+    @OneToOne(() => User, { eager: true, onDelete: 'CASCADE' })
     @JoinColumn()
     user: User;
     @CreateDateColumn()

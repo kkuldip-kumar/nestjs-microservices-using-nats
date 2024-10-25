@@ -16,9 +16,9 @@ export class UsersService {
   }
 
   getUserById(userId: string) {
+    console.log('userId kk', userId)
     return this.usersRepository.findOne({
-      where: { id: userId },
-      relations: ['payments'],
+      where: { id: userId }
     });
   }
 

@@ -14,7 +14,7 @@ export class ProductReview {
     @Column({ type: 'text' })
     review: string;
 
-    @ManyToOne(() => User, user => user.reviews)
+    @ManyToOne(() => User, user => user.reviews, { eager: true })
     user: User;
 
     @ManyToOne(() => Product, product => product.reviews)

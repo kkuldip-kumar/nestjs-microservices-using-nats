@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Category } from './category.entity';
 
-@Entity()
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Category } from './category.entity';
+import { ProductReview } from './product-review.entity';
+
+@Entity('products')
 export class Product {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -20,4 +22,11 @@ export class Product {
 
     @ManyToOne(() => Category, (category) => category.products, { eager: true })
     category: Category;
+    @OneToMany(() => ProductReview, (review) => review.product)
+    reviews: ProductReview
+
+    // @OneToMany(() => CartItem, (cartItem) => cartItem.product)
+    // cartItems: CartItem[];
+    // @OneToMany(() => OrderItem, (cartItem) => cartItem.product)
+    // orders: OrderItem[];
 }

@@ -16,12 +16,11 @@ export class OrdersController {
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: RequestModel,) {
-    const userId = req.user['sub'].id;
+    const userId = req.user['sub'].userId;
     const orderPayload = {
       userId,
       ...createOrderDto
     }
-    console.log('users', orderPayload);
     return this.natsClient.send({ cmd: 'create-order' }, orderPayload);
     // return this.ordersService.create(orderPayload);
   }

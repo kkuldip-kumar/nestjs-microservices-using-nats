@@ -164,30 +164,35 @@ export class AuthService {
     async login(credentials: LoginDto) {
         const { email, password } = credentials;
         //Find if user exists by email
-        const secret = this.configService.get<string>('JWT_SECRET');
-        console.log('AuthService login - JWT_SECRET:', secret);
+        // const secret = this.configService.get<string>('JWT_SECRET');
         try {
-            const user = await this.userLoginRepo.findOneBy({ email });
-            const userLogin = await this.userLoginRepo.findOne({
-                where: { email },
-                relations: ['user'],
-            });
+            // const user = await this.userLoginRepo.findOneBy({ email });
+            const userLogin = await this.userLoginRepo
+                .createQueryBuilder('userLogin')
+                .leftJoinAndSelect('userLogin.user', 'user')
+                .select(['userLogin.id', 'userLogin.password', 'user.id']) // This selects all fields from userLogin
+                .where('userLogin.email = :email', { email })
+                .getOne();
             if (!userLogin) {
                 throw new UnauthorizedException('Wrong credentials');
             }
 
             //Compare entered password with existing password
-            const passwordMatch = await bcrypt.compare(password, user.password);
+            const passwordMatch = await bcrypt.compare(password, userLogin.password);
             if (!passwordMatch) {
                 throw new UnauthorizedException('Wrong credentials');
             }
-            console.log(user)
+            console.log(userLogin)
             //Generate JWT tokens
-            const { password: savedPassword, ...rest } = user
-            const tokens = this.generateUserTokens(rest);
+            const { password: savedPassword, ...rest } = userLogin
+            const userData = {
+                loginId: rest.id,
+                userId: rest.user.id,
+            }
+            const tokens = this.generateUserTokens(userData);
             return {
                 ...tokens,
-                userId: user.id,
+                userId: userLogin.user.id,
             };
         } catch (error) {
             console.error('Error during login:', error);
